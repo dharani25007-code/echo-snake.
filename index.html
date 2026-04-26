@@ -57,3 +57,190 @@ canvas{display:block;background:#0d0f1a;touch-action:none}
   <div id="tip">Arrow / WASD · Swipe on canvas · D-pad above</div>
 </div>
 <script>
+const C=document.getElementById('c'),X=C.getContext('2d');
+const COLS=20,ROWS=20,SZ=20,ECHO_DELAY=5000,ECHO_FRAMES=Math.floor(ECHO_DELAY/150);
+let snake,dir,ndir,apple,score,best=0,level,loop,running=false;
+let history=[],echoSnake=[],echoActive=false,echoTimer=0,frameCount=0;
+let particles=[];
+
+function rnd(n){return Math.floor(Math.random()*n)}
+function placeApple(){
+  let p;
+  do{p={x:rnd(COLS),y:rnd(ROWS)}}
+  while(snake.some(s=>s.x===p.x&&s.y===p.y)||(echoSnake.length&&echoSnake.some(e=>e.x===p.x&&e.y===p.y)));
+  return p;
+}
+function updateHUD(){
+  document.getElementById('sc').textContent=score;
+  document.getElementById('bs').textContent=best;
+  document.getElementById('lv').textContent=level;
+}
+function getSpeed(){return Math.max(80,200-(level-1)*18)}
+
+function init(){
+  snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+  dir={x:1,y:0};ndir={x:1,y:0};
+  score=0;level=1;frameCount=0;
+  history=[];echoSnake=[];echoActive=false;echoTimer=0;particles=[];
+  apple=placeApple();
+  updateHUD();
+  updateEchoBar(0);
+  document.getElementById('ect').textContent='5s';
+}
+
+function spawnParticles(x,y,col){
+  for(let i=0;i<6;i++){
+    particles.push({x:x*SZ+SZ/2,y:y*SZ+SZ/2,vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3,life:18,col});
+  }
+}
+
+function step(){
+  dir=ndir;
+  const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+
+  if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||snake.some(s=>s.x===head.x&&s.y===head.y)){
+    endGame('wall or self');return;
+  }
+  if(echoActive&&echoSnake.length&&echoSnake.some(e=>e.x===head.x&&e.y===head.y)){
+    endGame('echo');return;
+  }
+
+  history.unshift({x:head.x,y:head.y});
+  snake.unshift(head);
+  frameCount++;
+
+  if(head.x===apple.x&&head.y===apple.y){
+    score+=level*10;
+    if(score>best)best=score;
+    level=Math.floor(snake.length/5)+1;
+    spawnParticles(apple.x,apple.y,'#fbbf24');
+    apple=placeApple();
+    clearInterval(loop);loop=setInterval(step,getSpeed());
+    updateHUD();
+  } else {
+    snake.pop();
+    if(history.length>COLS*ROWS)history.pop();
+  }
+
+  if(frameCount>=ECHO_FRAMES){
+    echoActive=true;
+    const echoLen=Math.max(3,snake.length-2);
+    echoSnake=history.slice(history.length-echoLen).reverse();
+    document.getElementById('ect').textContent='NOW!';
+    updateEchoBar(1);
+  } else {
+    const pct=frameCount/ECHO_FRAMES;
+    const rem=((ECHO_DELAY-frameCount*getSpeed())/1000);
+    document.getElementById('ect').textContent=Math.max(0,rem).toFixed(1)+'s';
+    updateEchoBar(pct);
+  }
+
+  particles=particles.filter(p=>p.life>0);
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life--;});
+
+  draw();
+}
+
+function updateEchoBar(pct){
+  const bar=document.getElementById('echo-bar');
+  const lbl=document.getElementById('echo-pct');
+  if(!echoActive){
+    bar.style.width=(pct*100).toFixed(0)+'%';
+    bar.style.background=pct>0.8?'#f87171':'#a78bfa';
+    lbl.textContent=Math.round(pct*100)+'%';
+  } else {
+    bar.style.width='100%';bar.style.background='#f87171';lbl.textContent='ACTIVE';
+  }
+}
+
+function draw(){
+  X.fillStyle='#0d0f1a';X.fillRect(0,0,C.width,C.height);
+
+  // grid
+  X.fillStyle='rgba(255,255,255,0.02)';
+  for(let x=0;x<COLS;x++)for(let y=0;y<ROWS;y++)X.fillRect(x*SZ+SZ/2-1,y*SZ+SZ/2-1,2,2);
+
+  // echo ghost trail (history replay)
+  if(history.length>0){
+    const trailLen=Math.min(history.length,20);
+    for(let i=trailLen-1;i>=0;i--){
+      const h=history[i];
+      const alpha=((trailLen-i)/trailLen)*0.12;
+      X.fillStyle=`rgba(167,139,250,${alpha})`;
+      X.fillRect(h.x*SZ+3,h.y*SZ+3,SZ-6,SZ-6);
+    }
+  }
+
+  // echo snake (the ghost)
+  if(echoActive&&echoSnake.length){
+    echoSnake.forEach((e,i)=>{
+      const alpha=i===0?0.9:0.5-i/(echoSnake.length*2.5);
+      X.fillStyle=`rgba(248,113,113,${Math.max(0.1,alpha)})`;
+      X.beginPath();X.roundRect(e.x*SZ+2,e.y*SZ+2,SZ-4,SZ-4,3);X.fill();
+      if(i===0){
+        X.fillStyle='#08090d';
+        X.fillRect(e.x*SZ+5,e.y*SZ+5,3,3);
+        X.fillRect(e.x*SZ+SZ-8,e.y*SZ+5,3,3);
+      }
+    });
+    // pulse border on echo
+    X.strokeStyle='rgba(248,113,113,0.3)';X.lineWidth=1;
+    echoSnake.forEach(e=>{
+      X.strokeRect(e.x*SZ+1,e.y*SZ+1,SZ-2,SZ-2);
+    });
+  }
+
+  // apple
+  X.fillStyle='#fbbf24';
+  X.beginPath();X.roundRect(apple.x*SZ+3,apple.y*SZ+3,SZ-6,SZ-6,4);X.fill();
+  X.fillStyle='#fde68a';X.fillRect(apple.x*SZ+7,apple.y*SZ+5,3,3);
+
+  // player snake
+  snake.forEach((s,i)=>{
+    X.fillStyle=i===0?'#a78bfa':i<3?'#7c3aed':'#4c1d95';
+    X.beginPath();X.roundRect(s.x*SZ+1,s.y*SZ+1,SZ-2,SZ-2,i===0?5:3);X.fill();
+    if(i===0){
+      X.fillStyle='#0d0f1a';
+      if(dir.x===1){X.fillRect(s.x*SZ+SZ-7,s.y*SZ+4,3,3);X.fillRect(s.x*SZ+SZ-7,s.y*SZ+SZ-7,3,3)}
+      else if(dir.x===-1){X.fillRect(s.x*SZ+4,s.y*SZ+4,3,3);X.fillRect(s.x*SZ+4,s.y*SZ+SZ-7,3,3)}
+      else if(dir.y===-1){X.fillRect(s.x*SZ+4,s.y*SZ+4,3,3);X.fillRect(s.x*SZ+SZ-7,s.y*SZ+4,3,3)}
+      else{X.fillRect(s.x*SZ+4,s.y*SZ+SZ-7,3,3);X.fillRect(s.x*SZ+SZ-7,s.y*SZ+SZ-7,3,3)}
+    }
+  });
+
+  // particles
+  particles.forEach(p=>{
+    X.globalAlpha=p.life/18;
+    X.fillStyle=p.col;
+    X.fillRect(p.x-2,p.y-2,4,4);
+  });
+  X.globalAlpha=1;
+}
+
+function startGame(){
+  document.getElementById('ov').classList.add('hidden');
+  init();running=true;
+  clearInterval(loop);loop=setInterval(step,getSpeed());
+}
+
+function endGame(reason){
+  running=false;clearInterval(loop);
+  const ov=document.getElementById('ov');
+  ov.classList.remove('hidden');
+  document.getElementById('ot').textContent=reason==='echo'?'CAUGHT BY\nYOUR ECHO':'GAME OVER';
+  document.getElementById('os').textContent='Score: '+score+'\nBest: '+best+(reason==='echo'?'\n\nYour past caught up with you!':'');
+  document.getElementById('ob').textContent='RETRY';
+}
+
+function setDir(x,y){if(running&&!(x===-dir.x&&y===-dir.y))ndir={x,y}}
+const KM={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};
+document.addEventListener('keydown',e=>{if(KM[e.key]){setDir(...KM[e.key]);e.preventDefault()}});
+document.getElementById('bu').onclick=()=>setDir(0,-1);
+document.getElementById('bd').onclick=()=>setDir(0,1);
+document.getElementById('bl').onclick=()=>setDir(-1,0);
+document.getElementById('br').onclick=()=>setDir(1,0);
+let tx=0,ty=0;
+C.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;e.preventDefault()},{passive:false});
+C.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;Math.abs(dx)>Math.abs(dy)?setDir(dx>0?1:-1,0):setDir(0,dy>0?1:-1);e.preventDefault()},{passive:false});
+draw();
+</script>
