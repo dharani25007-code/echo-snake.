@@ -1,1 +1,59 @@
-
+<!DOCTYPE html>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#08090d;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;color:#e2e8f0}
+#wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px}
+#title{font-size:15px;color:#a78bfa;letter-spacing:3px}
+#tagline{font-size:7px;color:#6366f1;letter-spacing:2px;margin-top:-8px}
+#hud{display:flex;gap:28px}
+.hud-box{text-align:center}
+.hud-lbl{font-size:7px;color:#64748b;letter-spacing:1px;margin-bottom:5px}
+.hud-val{font-size:13px;color:#e2e8f0}
+#cw{position:relative;border:2px solid #a78bfa33;border-radius:10px;overflow:hidden}
+canvas{display:block;background:#0d0f1a;touch-action:none}
+#ov{position:absolute;inset:0;background:#08090dcc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+#ov.hidden{display:none}
+#ot{font-size:11px;color:#a78bfa;text-align:center;line-height:2.2}
+#os{font-size:8px;color:#64748b;text-align:center;line-height:2}
+#ob{font-size:9px;background:#a78bfa;color:#08090d;border:none;padding:12px 22px;border-radius:7px;cursor:pointer;letter-spacing:1px}
+#ob:hover{background:#c4b5fd}
+#echo-bar-wrap{width:400px}
+#echo-lbl{font-size:7px;color:#f87171;letter-spacing:1px;margin-bottom:5px;display:flex;justify-content:space-between}
+#echo-bar-bg{background:#1e1b2e;border-radius:4px;height:8px;overflow:hidden;border:1px solid #f8717133}
+#echo-bar{height:8px;background:#f87171;border-radius:4px;transition:width 0.1s;width:0%}
+#dpad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:5px;margin-top:4px}
+.db{background:#161b27;border:1px solid #a78bfa33;border-radius:7px;color:#a78bfa;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:sans-serif}
+.db:active{background:#a78bfa22;transform:scale(0.93)}
+.de{visibility:hidden}
+#tip{font-size:7px;color:#475569;text-align:center}
+</style>
+<div id="wrap">
+  <div id="title">ECHO SNAKE</div>
+  <div id="tagline">YOUR PAST HUNTS YOU</div>
+  <div id="hud">
+    <div class="hud-box"><div class="hud-lbl">Score</div><div class="hud-val" id="sc">0</div></div>
+    <div class="hud-box"><div class="hud-lbl">Best</div><div class="hud-val" id="bs">0</div></div>
+    <div class="hud-box"><div class="hud-lbl">Echo in</div><div class="hud-val" id="ect">5s</div></div>
+    <div class="hud-box"><div class="hud-lbl">Level</div><div class="hud-val" id="lv">1</div></div>
+  </div>
+  <div id="cw">
+    <canvas id="c" width="400" height="400"></canvas>
+    <div id="ov">
+      <div id="ot">ECHO SNAKE</div>
+      <div id="os">Your ghost follows your path<br>with a 5 second delay.<br>Don't collide with your own past.</div>
+      <button id="ob" onclick="startGame()">PLAY</button>
+    </div>
+  </div>
+  <div id="echo-bar-wrap">
+    <div id="echo-lbl"><span>Echo activates in...</span><span id="echo-pct">100%</span></div>
+    <div id="echo-bar-bg"><div id="echo-bar"></div></div>
+  </div>
+  <div id="dpad">
+    <div class="de"></div><div class="db" id="bu">▲</div><div class="de"></div>
+    <div class="db" id="bl">◀</div><div class="de"></div><div class="db" id="br">▶</div>
+    <div class="de"></div><div class="db" id="bd">▼</div><div class="de"></div>
+  </div>
+  <div id="tip">Arrow / WASD · Swipe on canvas · D-pad above</div>
+</div>
+<script>
