@@ -116,5 +116,5 @@ MIT License — see [LICENSE](LICENSE)
 <div align="center">
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:4c1d95,100:08090d&height=120&section=footer&text=Don't%20let%20your%20past%20catch%20you.&fontSize=14&fontColor=a78bfa&fontAlignY=65&animation=fadeIn"/>
 
-**Built by [Dharanidharan M](https://github.com/dharani25007-code) · Coimbatore, India 🇮🇳**
+**Built by [Dharanidharan M](https://github.com/dharani25007-code)**
 </div>
