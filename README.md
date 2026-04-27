@@ -12,7 +12,7 @@
 > 🐍 Classic Snake — but your ghost follows your exact path with a **5-second delay.**
 > Survive long enough and your past becomes your deadliest enemy.
 
-**[▶ Play Now](#getting-started)** · **[View Source](echo_snake_game.html)**
+**[▶ Play Now](#getting-started)** · **[View Source](https://dharani25007-code.github.io/echo-snake./)**
 
 </div>
 
