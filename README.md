@@ -15,7 +15,7 @@
 
 **[▶ Play Now](https://dharani25007-code.github.io/echo-snake./)** · **[View Source]()**
 play and enjoy
-</div>
+</div
 ---
 
 ## 🎮 What Makes It Different
