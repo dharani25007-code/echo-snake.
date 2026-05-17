@@ -20,6 +20,7 @@ play and enjoy
 ---
 
 ## 🎮 What Makes It Different
+
 Normal Snake: avoid walls, avoid yourself.
 
 **Echo Snake:** after 5 seconds, a **ghost snake** spawns and replays your exact movement history. It follows every turn you made — perfectly. The longer you survive, the closer your echo gets.
