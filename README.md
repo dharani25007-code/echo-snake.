@@ -2,14 +2,6 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:08090d,50:4c1d95,100:08090d&height=200&section=header&text=ECHO%20SNAKE&fontSize=52&fontColor=a78bfa&fontAlignY=40&desc=Your%20Past%20Hunts%20You&descAlignY=60&descSize=18&descColor=6366f1&animation=fadeIn"/>
 </div>
 
-<div align="center">
-
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![No Dependencies](https://img.shields.io/badge/Dependencies-Zero-4ecdc4?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-2.0-a78bfa?style=for-the-badge)
-
 > 🐍 Classic Snake — but your ghost follows your exact path with a **5-second delay.**
 > Survive long enough and your past becomes your deadliest enemy.
 
