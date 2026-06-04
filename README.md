@@ -14,7 +14,6 @@
 > Survive long enough and your past becomes your deadliest enemy.
 
 **[▶ Play Now](https://dharani25007-code.github.io/echo-snake./)** · **[View Source]()**
-
 </div>
 
 ---
