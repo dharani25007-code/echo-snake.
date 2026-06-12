@@ -1,5 +1,7 @@
 
-
+<div align="center">
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:08090d,50:4c1d95,100:08090d&height=200&section=header&text=ECHO%20SNAKE&fontSize=52&fontColor=a78bfa&fontAlignY=40&desc=Your%20Past%20Hunts%20You&descAlignY=60&descSize=18&descColor=6366f1&animation=fadeIn"/>
+</div>
 <div align="center">
   
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
