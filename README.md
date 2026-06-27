@@ -70,6 +70,7 @@ Eat apples in rapid succession to multiply your score:
 x1  →  x2  →  x3  →  ... →  x8 (MAX)
 ```
 
+
 - Combo resets if you wait too long between pickups
 - Higher combos turn the HUD **gold → pink**
 - Pair with the ×2 power-up for massive score bursts
