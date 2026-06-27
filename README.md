@@ -20,7 +20,6 @@
 
 ---
 
-
 ## 🎮 What Makes It Different
 
 Normal Snake: avoid walls, avoid yourself.
